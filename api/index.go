@@ -1,8 +1,9 @@
 package api
 
 import (
-	"accounting-bot/server"
 	"net/http"
+
+	"github.com/jiazhen-lin/linebot/server"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
