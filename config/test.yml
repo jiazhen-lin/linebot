@@ -1,0 +1,10 @@
+linebot:
+  secret: "LINE-SECRETS"
+  token: "LINE-TOKEN"
+
+database:
+  host: "DB-HOST"
+  port: "DB-PORT"
+
+server:
+  port: "SERVER-PORT"
