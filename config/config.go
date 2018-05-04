@@ -1,8 +1,10 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -31,10 +33,20 @@ type ConfigManager struct {
 	cfg *Config
 }
 
-var configPath = "test.yml"
-
 func (mgr *ConfigManager) loadFile() (*Config, error) {
 	cfg := &Config{}
+	env := os.Getenv("ENV")
+	var configPath string
+	if env == "" {
+		return nil, errors.New("Please specify ENV: PRODUCTION, DEVELOP, TEST")
+	} else if env == "PRODUCTION" {
+		configPath = "production.yml"
+	} else if env == "DEVELOP" {
+		configPath = "develop.yml"
+	} else if env == "TEST" {
+		configPath = "test.yml"
+	}
+
 	content, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		return nil, err
