@@ -1,9 +1,9 @@
 package main
 
 import (
-	"accounting-bot/api"
-	"accounting-bot/command"
-	"accounting-bot/server"
+	"github.com/jiazhen-lin/linebot/api"
+	"github.com/jiazhen-lin/linebot/command"
+	"github.com/jiazhen-lin/linebot/server"
 )
 
 func main() {
