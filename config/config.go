@@ -9,31 +9,36 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Config is top-level
 type Config struct {
 	LineConfig     LineBot  `yaml:"linebot"`
 	DatabaseConfig Database `yaml:"database"`
 	ServerConfig   Server   `yaml:"server"`
 }
 
+// LineBot is the field for LINE related config
 type LineBot struct {
 	Secret string `yaml:"secret"`
 	Token  string `yaml:"token"`
 }
 
+// Database is the field for database related config
 type Database struct {
 	Host string `yaml:"host"`
 	Port string `yaml:"port"`
 }
 
+// Server is the field for server related config
 type Server struct {
 	Port string `yaml:"port"`
 }
 
-type ConfigManager struct {
+// Manager is the manager that hold config instance
+type Manager struct {
 	cfg *Config
 }
 
-func (mgr *ConfigManager) loadFile() (*Config, error) {
+func (mgr *Manager) loadFile() (*Config, error) {
 	cfg := &Config{}
 	env := os.Getenv("ENV")
 	var configPath string
@@ -58,14 +63,16 @@ func (mgr *ConfigManager) loadFile() (*Config, error) {
 	return cfg, nil
 }
 
-func (mgr *ConfigManager) Get() (*Config, error) {
+// Get is the function for returning config instance from config.Manager
+func (mgr *Manager) Get() (*Config, error) {
+	// return config instance directly if already loaded
 	if mgr.cfg != nil {
 		return mgr.cfg, nil
 	}
 	c, err := mgr.loadFile()
-	mgr.cfg = c
 	if err != nil {
 		return nil, err
 	}
+	mgr.cfg = c
 	return mgr.cfg, nil
 }
