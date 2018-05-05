@@ -16,7 +16,7 @@ func NewIndexAPIs(s server.Server) {
 }
 
 func index(c *gin.Context) {
-	c.String(http.StatusOK, "lionbot server")
+	c.String(http.StatusOK, "linebot server")
 }
 
 func test(c *gin.Context) {
