@@ -1,3 +1,6 @@
+# ssl certificate
+ssl/
+
 # Binaries for programs and plugins
 *.exe
 *.dll
