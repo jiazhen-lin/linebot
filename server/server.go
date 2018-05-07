@@ -55,7 +55,7 @@ func (s *botServer) Run() {
 		Handler: s.router,
 	}
 	go func() {
-		if err := srv.ListenAndServe(); err != nil {
+		if err := srv.ListenAndServeTLS("ssl/bundle.crt", "ssl/private.key"); err != nil {
 			logrus.Error("server error: ", err)
 		}
 	}()
