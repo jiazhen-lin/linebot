@@ -1,5 +1,9 @@
 package command
 
+import (
+	"github.com/sirupsen/logrus"
+)
+
 // Interface is command interface
 type Interface interface {
 	// Command executes cmd and return result
@@ -9,6 +13,7 @@ type Interface interface {
 }
 
 type command struct {
+	log *logrus.Logger
 }
 
 func (c *command) Register(cmd string, handler func() error) error {
@@ -19,6 +24,8 @@ func (c *command) Command(cmd string) error {
 }
 
 // New return command concrete instance
-func New() Interface {
-	return &command{}
+func New(log *logrus.Logger) Interface {
+	return &command{
+		log: log,
+	}
 }
