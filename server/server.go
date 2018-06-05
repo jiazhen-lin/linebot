@@ -26,15 +26,17 @@ type Server interface {
 }
 
 // New return server implement
-func New() Server {
+func New(log *logrus.Logger) Server {
 	router := gin.New()
 	return &botServer{
 		router: router,
+		log:    log,
 	}
 }
 
 type botServer struct {
 	router *gin.Engine
+	log    *logrus.Logger
 
 	// TODO: config:
 	// bot: channel id / channel secret / access token
@@ -56,18 +58,18 @@ func (s *botServer) Run() {
 	}
 	go func() {
 		if err := srv.ListenAndServeTLS("ssl/bundle.crt", "ssl/private.key"); err != nil {
-			logrus.Error("server error: ", err)
+			s.log.Error("server error: ", err)
 		}
 	}()
 	// Graceful shutdown
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
-	logrus.Info("ready to shutdown... ")
+	s.log.Info("ready to shutdown... ")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		logrus.Error("server shutdown error: ", err)
+		s.log.Error("server shutdown error: ", err)
 	}
-	logrus.Info("server shutdown")
+	s.log.Info("server shutdown")
 }
