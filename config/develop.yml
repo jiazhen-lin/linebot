@@ -1,0 +1,13 @@
+linebot:
+  secret: "3a2311af95ef08db962704516fc4c3fd"
+  token: "S/4X9lo2HMDHCXo+S3PHrihkrJaFNPrRfKyNXPoliEPXX4Tt80aaoALWYeHc25f/sDbvE9McXcv7cHeF0PDmAu2gSegfx1L6dyjeZQ596YlRFBLAcfyQC+dGMNlSAud29Rpe6rlrjCR/lEdDo3DnggdB04t89/1O/w1cDnyilFU="
+
+database:
+  host: "mariadb"
+  port: "3306"
+  database: "linebot"
+  user: "linebot"
+  password: "KittyLionLineBot"
+
+server:
+  port: "5566"
