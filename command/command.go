@@ -1,6 +1,7 @@
 package command
 
 import (
+	"github.com/jiazhen-lin/linebot/config"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,8 @@ type Interface interface {
 }
 
 type command struct {
-	log *logrus.Logger
+	log    *logrus.Logger
+	config *config.Config
 }
 
 func (c *command) Register(cmd string, handler func() error) error {
@@ -24,8 +26,9 @@ func (c *command) Command(cmd string) error {
 }
 
 // New return command concrete instance
-func New(log *logrus.Logger) Interface {
+func New(log *logrus.Logger, config *config.Config) Interface {
 	return &command{
-		log: log,
+		log:    log,
+		config: config,
 	}
 }

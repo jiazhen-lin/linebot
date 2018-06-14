@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jiazhen-lin/linebot/config"
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,21 +27,19 @@ type Server interface {
 }
 
 // New return server implement
-func New(log *logrus.Logger) Server {
+func New(log *logrus.Logger, config *config.Config) Server {
 	router := gin.New()
 	return &botServer{
 		router: router,
 		log:    log,
+		config: config,
 	}
 }
 
 type botServer struct {
 	router *gin.Engine
 	log    *logrus.Logger
-
-	// TODO: config:
-	// bot: channel id / channel secret / access token
-	// server: port
+	config *config.Config
 
 	// TODO: middleware
 	// verify bot request
@@ -53,11 +52,12 @@ func (s *botServer) RegisterAPI(route string, method string, handler func(c *gin
 
 func (s *botServer) Run() {
 	srv := &http.Server{
-		Addr:    ":8088",
+		Addr:    ":" + s.config.ServerConfig.Port,
 		Handler: s.router,
 	}
 	go func() {
 		if err := srv.ListenAndServeTLS("ssl/bundle.crt", "ssl/private.key"); err != nil {
+			//if err := srv.ListenAndServe(); err != nil {
 			s.log.Error("server error: ", err)
 		}
 	}()

@@ -3,8 +3,8 @@ linebot:
   token: "LINE-TOKEN"
 
 database:
-  host: "DB-HOST"
-  port: "DB-PORT"
+  host: "localhost"
+  port: "3306"
 
 server:
-  port: "SERVER-PORT"
+  port: "5566"

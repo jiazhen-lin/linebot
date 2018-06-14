@@ -33,23 +33,18 @@ type Server struct {
 	Port string `yaml:"port"`
 }
 
-// Manager is the manager that hold config instance
-type Manager struct {
-	cfg *Config
-}
-
-func (mgr *Manager) loadFile() (*Config, error) {
+func loadFile() (*Config, error) {
 	cfg := &Config{}
 	env := os.Getenv("ENV")
 	var configPath string
 	if env == "" {
 		return nil, errors.New("Please specify ENV: PRODUCTION, DEVELOP, TEST")
 	} else if env == "PRODUCTION" {
-		configPath = "production.yml"
+		configPath = "config/production.yml"
 	} else if env == "DEVELOP" {
-		configPath = "develop.yml"
+		configPath = "config/develop.yml"
 	} else if env == "TEST" {
-		configPath = "test.yml"
+		configPath = "config/test.yml"
 	}
 
 	content, err := ioutil.ReadFile(configPath)
@@ -63,16 +58,11 @@ func (mgr *Manager) loadFile() (*Config, error) {
 	return cfg, nil
 }
 
-// Get is the function for returning config instance from config.Manager
-func (mgr *Manager) Get() (*Config, error) {
-	// return config instance directly if already loaded
-	if mgr.cfg != nil {
-		return mgr.cfg, nil
-	}
-	c, err := mgr.loadFile()
+// New return a config from config file
+func New() (*Config, error) {
+	config, err := loadFile()
 	if err != nil {
 		return nil, err
 	}
-	mgr.cfg = c
-	return mgr.cfg, nil
+	return config, nil
 }
