@@ -5,6 +5,7 @@ import (
 	"github.com/jiazhen-lin/linebot/command"
 	"github.com/jiazhen-lin/linebot/config"
 	"github.com/jiazhen-lin/linebot/server"
+	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/sirupsen/logrus"
 )
 
@@ -28,7 +29,7 @@ func main() {
 	postback := command.NewPostbackCommand()
 	message := command.NewMessageCommand()
 
-	api.NewBotAPIs(srv, bot, follow, unFollow, join, leave, postback, message)
+	api.NewBotAPIs(srv, bot, log, follow, unFollow, join, leave, postback, message)
 	api.NewIndexAPIs(srv, log)
 
 	srv.Run()
