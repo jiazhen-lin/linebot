@@ -19,7 +19,6 @@ func main() {
 		log.Error(err)
 	}
 	srv := server.New(log, config)
-	cmd := command.New(log, config)
 
 	// Linebot command handler
 	follow := command.NewFollowCommand()

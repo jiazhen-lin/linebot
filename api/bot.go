@@ -9,7 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/sirupsen/logrus"
 
 	"github.com/jiazhen-lin/linebot/command"
 	"github.com/jiazhen-lin/linebot/server"
@@ -33,7 +32,7 @@ func NewBotAPIs(s server.Server,
 		postback: postback,
 		message:  message,
 	}
-	s.RegisterAPI("/linebot", http.MethodPost, b.Handler)
+	s.RegisterAPI("/linebot", http.MethodPost, b.handler)
 }
 
 type botAPI struct {
@@ -48,23 +47,23 @@ type botAPI struct {
 	message  command.Interface
 }
 
-func (api *botAPI) Handler(c *gin.Context) {
+func (api *botAPI) handler(c *gin.Context) {
 	bodyByte, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-		logrus.Error("read body error: ", err)
+		log.Error("read body error: ", err)
 		c.String(http.StatusBadRequest, fmt.Sprintf("parse body error: %s", err))
 		return
 	}
 	bodyString := string(bodyByte)
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyByte))
-	logrus.Info("read body: ", bodyString)
+	log.Info("read body: ", bodyString)
 
 	// Dispatch request by event.Type
 	events, err := api.bot.ParseRequest(c.Request)
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("parse request error: %s", err))
 	}
-	logrus.Info("linebot.Request events: ", events)
+	log.Info("linebot.Request events: ", events)
 	for _, event := range events {
 		ctx := context.Background()
 		messages, err := api.handle(ctx, event)
