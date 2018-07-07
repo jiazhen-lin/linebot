@@ -28,6 +28,8 @@ func NewBotAPIs(s server.Server,
 	message command.Interface,
 ) {
 	b := &botAPI{
+		bot:      bot,
+		log:      log,
 		follow:   follow,
 		unfollow: unFollow,
 		join:     join,
