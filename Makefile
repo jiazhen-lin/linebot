@@ -1,3 +1,5 @@
+VERSION := 0.0.1
+
 run:
 	docker run -d \
 		--name linebot \
