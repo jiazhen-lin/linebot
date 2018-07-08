@@ -1,5 +1,7 @@
 # ssl certificate
 ssl/
+config/*.yml
+config/*.yaml
 
 # Binaries for programs and plugins
 *.exe

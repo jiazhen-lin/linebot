@@ -1,0 +1,23 @@
+version: '2 '
+
+services:
+  linebot:
+    image: linebot:0.0.1
+    restart: always
+    environment:
+      - ENV=DEVELOP
+    ports:
+      - "5566:5566"
+    volumes:
+      - /PATH/TO/SSL:/go/src/github.com/jiazhen-lin/linebot/ssl:ro
+
+  mariadb:
+    image: mariadb:10.3.7
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=ROOT_PASSWORD
+      - MYSQL_DATABASE=DATABASE
+      - MYSQL_USER=USER
+      - MYSQL_PASSWORD=PASSWORD
+    volumes:
+      - /PATH/TO/MYSQL/DATA:/var/lib/mysql
