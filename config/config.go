@@ -24,8 +24,11 @@ type LineBot struct {
 
 // Database is the field for database related config
 type Database struct {
-	Host string `yaml:"host"`
-	Port string `yaml:"port"`
+	Host     string `yaml:"host"`
+	Port     string `yaml:"port"`
+	Database string `yaml:"database"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
 }
 
 // Server is the field for server related config
