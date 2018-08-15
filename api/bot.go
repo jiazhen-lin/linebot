@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 	"github.com/line/line-bot-sdk-go/linebot"
 
 	"github.com/jiazhen-lin/linebot/command"
@@ -19,6 +20,7 @@ import (
 // NewBotAPIs registers bot api
 func NewBotAPIs(s server.Server,
 	bot *linebot.Client,
+	db *sqlx.DB,
 	log *logrus.Logger,
 	follow command.Interface,
 	unFollow command.Interface,
@@ -29,6 +31,7 @@ func NewBotAPIs(s server.Server,
 ) {
 	b := &botAPI{
 		bot:      bot,
+		db:       db,
 		log:      log,
 		follow:   follow,
 		unfollow: unFollow,
@@ -43,6 +46,7 @@ func NewBotAPIs(s server.Server,
 type botAPI struct {
 	// Linebot object helps parse request and reply/push response to clients
 	bot *linebot.Client
+	db  *sqlx.DB
 	log *logrus.Logger
 	// Line request action handlers
 	follow   command.Interface
