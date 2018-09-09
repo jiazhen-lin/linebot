@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"strings"
 
 	"github.com/jiazhen-lin/linebot/api"
 	"github.com/jiazhen-lin/linebot/command"
@@ -13,6 +15,7 @@ import (
 )
 
 func main() {
+	// initialize log, config, bot, server, db
 	log := logrus.New()
 	config, err := config.New()
 	if err != nil {
@@ -36,6 +39,20 @@ func main() {
 	err = db.Ping()
 	if err != nil {
 		log.Error(err)
+	}
+
+	// create database tables
+	tableSchema, err := ioutil.ReadFile("./sql_script/create_tables.sql")
+	if err != nil {
+		log.Error(err)
+	}
+	script := strings.Split(string(tableSchema), ";")
+	for _, s := range script {
+		// skip last string
+		if s == "" {
+			continue
+		}
+		db.MustExec(s)
 	}
 
 	// Linebot command handler
