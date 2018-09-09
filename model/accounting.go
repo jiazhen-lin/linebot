@@ -9,7 +9,7 @@ import (
 type Accounting struct {
 	ID             uint           `db:"id"`
 	UserID         string         `db:"user_id"`
-	Type           string         `db:"type"`
+	Kind           string         `db:"kind"`
 	CreatedTime    time.Time      `db:"created_time"`
 	AccountingTime time.Time      `db:"accounting_time"`
 	Price          float64        `db:"price"`
