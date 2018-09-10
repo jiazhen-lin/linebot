@@ -20,11 +20,11 @@ func main() {
 	log := logrus.New()
 	config, err := config.New()
 	if err != nil {
-		log.Error(err)
+		log.Panic(err)
 	}
 	bot, err := linebot.New(config.LineConfig.Secret, config.LineConfig.Token)
 	if err != nil {
-		log.Error(err)
+		log.Panic(err)
 	}
 	srv := server.New(log, config)
 	dbConnectionString := fmt.Sprintf(
@@ -35,17 +35,17 @@ func main() {
 		config.DatabaseConfig.Database)
 	db, err := sqlx.Connect("mysql", dbConnectionString)
 	if err != nil {
-		log.Error(err)
+		log.Panic(err)
 	}
 	err = db.Ping()
 	if err != nil {
-		log.Error(err)
+		log.Panic(err)
 	}
 
 	// create database tables
 	tableSchema, err := ioutil.ReadFile("./sql_script/create_tables.sql")
 	if err != nil {
-		log.Error(err)
+		log.Panic(err)
 	}
 	script := strings.Split(string(tableSchema), ";")
 	for _, s := range script {
