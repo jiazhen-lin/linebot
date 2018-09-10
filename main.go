@@ -28,7 +28,7 @@ func main() {
 	}
 	srv := server.New(log, config)
 	dbConnectionString := fmt.Sprintf(
-		"%v:%v@(%v:3306)/%v",
+		"%v:%v@tcp(%v:3306)/%v",
 		config.DatabaseConfig.User,
 		config.DatabaseConfig.Password,
 		config.DatabaseConfig.Host,
