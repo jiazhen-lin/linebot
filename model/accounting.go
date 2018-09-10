@@ -7,11 +7,11 @@ import (
 
 // Accounting represents the account records
 type Accounting struct {
-	ID             uint           `db:"id"`
-	UserID         string         `db:"user_id"`
+	ID             uint           `db:"ID"`
+	UserID         string         `db:"userID"`
 	Kind           string         `db:"kind"`
-	CreatedTime    time.Time      `db:"created_time"`
-	AccountingTime time.Time      `db:"accounting_time"`
+	CreatedTime    time.Time      `db:"createdTime"`
+	AccountingTime time.Time      `db:"accountingTime"`
 	Price          float64        `db:"price"`
 	Purpose        sql.NullString `db:"purpose"`
 }
