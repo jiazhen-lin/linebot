@@ -5,13 +5,14 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/jmoiron/sqlx"
+	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/sirupsen/logrus"
+
 	"github.com/jiazhen-lin/linebot/api"
 	"github.com/jiazhen-lin/linebot/command"
 	"github.com/jiazhen-lin/linebot/config"
 	"github.com/jiazhen-lin/linebot/server"
-	"github.com/jmoiron/sqlx"
-	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/sirupsen/logrus"
 )
 
 func main() {
