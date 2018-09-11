@@ -9,9 +9,9 @@ import (
 type Accounting struct {
 	ID             uint           `db:"ID"`
 	UserID         string         `db:"userID"`
-	Kind           string         `db:"kind"`
+	Category       string         `db:"category"`
 	CreatedTime    time.Time      `db:"createdTime"`
 	AccountingTime time.Time      `db:"accountingTime"`
 	Price          float64        `db:"price"`
-	Purpose        sql.NullString `db:"purpose"`
+	Detail         sql.NullString `db:"detail"`
 }
