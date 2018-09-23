@@ -62,9 +62,9 @@ func main() {
 	join := command.NewJoinCommand()
 	leave := command.NewLeaveCommand()
 	postback := command.NewPostbackCommand()
-	message := command.NewMessageCommand()
+	message := command.NewMessageCommand(db)
 
-	api.NewBotAPIs(srv, bot, db, log, follow, unFollow, join, leave, postback, message)
+	api.NewBotAPIs(srv, bot, log, follow, unFollow, join, leave, postback, message)
 	api.NewIndexAPIs(srv, log)
 
 	srv.Run()
