@@ -85,7 +85,12 @@ func parseCostCommand(cmd []string) (*accountingModel, error) {
 	if !exist {
 		categoryEnum = 0
 	}
-	combinedDetail := *detail + " " + strings.Join(*remain, " ")
+	var combinedDetail string
+	if len(*remain) != 0 {
+		combinedDetail = *detail + " " + strings.Join(*remain, " ")
+	} else {
+		combinedDetail = *detail
+	}
 	c := &accountingModel{price: *price, category: categoryEnum, accountingTime: *accountingTime, detail: combinedDetail}
 	return c, nil
 }
