@@ -10,30 +10,83 @@ import (
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
+func init() {
+	categoryStoI = make(map[string]int)
+	categoryItoS = make(map[int]string)
+	categoryStoI["unknown"] = 0
+	categoryStoI["breakfast"] = 1
+	categoryStoI["lunch"] = 2
+	categoryStoI["dinner"] = 3
+	categoryStoI["drink"] = 4
+	categoryStoI["snack"] = 5
+	categoryStoI["closthing"] = 6
+	categoryStoI["fun"] = 7
+	categoryStoI["traffic"] = 8
+	categoryStoI["sport"] = 9
+
+	for k, v := range categoryStoI {
+		categoryItoS[v] = k
+	}
+}
+
 type messageCMD struct {
 	db *sqlx.DB
 }
 
-type costParam struct {
+type accountingModel struct {
 	price          float64
-	category       string
+	category       int
 	accountingTime string
 	detail         string
 }
 
-var costUsage = "Usage:\n\tcost PRICE CATEGORY -t --time ACCOUTING-TIME -d --detail DETAIL"
+type RemainCmd []string
 
-func parseCostCommand(cmd []string) (*costParam, error) {
-	a := kingpin.New("cost", "Accounting command line.")
-	price := a.Arg("price", "Price").Required().Float64()
-	category := a.Arg("category", "Category").Required().String()
-	accountingTime := a.Flag("time", "Accounting time.").Default(time.Now().UTC().Format("2006-01-02")).Short('t').String()
-	detail := a.Flag("detail", "Detail.").Default("").Short('d').String()
-	_, err := a.Parse(cmd)
+func (r *RemainCmd) Set(value string) error {
+	*r = append(*r, value)
+	return nil
+}
+
+func (r *RemainCmd) String() string {
+	return ""
+}
+
+func (r *RemainCmd) IsCumulative() bool {
+	return true
+}
+
+func RemainCmdList(s kingpin.Settings) (target *[]string) {
+	target = new([]string)
+	s.SetValue((*RemainCmd)(target))
+	return
+}
+
+const costUsage = "Usage:\n\tcost PRICE CATEGORY -t --time ACCOUTING-TIME(2018/01/01) -d --detail DETAIL"
+
+var categoryStoI map[string]int
+var categoryItoS map[int]string
+
+func parseCostCommand(cmd []string) (*accountingModel, error) {
+	// example: cost 999 breakfast -t 2018-09-09 -d kappa breakfast
+	accounting := kingpin.New("cost", "Accounting command line.")
+	price := accounting.Arg("price", "Price").Required().Float64()
+	category := accounting.Arg("category", "Category").Default("Unknown").Required().String()
+	accountingTime := accounting.Flag("time", "Accounting time.").Default(time.Now().UTC().Format("2006-01-02")).Short('t').String()
+	detail := accounting.Flag("detail", "Detail.").Default("").Short('d').String()
+	remain := RemainCmdList(accounting.Arg("remain", "Remain part of command."))
+	_, err := accounting.Parse(cmd)
 	if err != nil {
 		return nil, err
 	}
-	c := &costParam{price: *price, category: *category, accountingTime: *accountingTime, detail: *detail}
+
+	// combine data and validate content
+	*category = strings.ToLower(*category)
+	categoryEnum, exist := categoryStoI[*category]
+	if !exist {
+		categoryEnum = 0
+	}
+	combinedDetail := *detail + " " + strings.Join(*remain, " ")
+	c := &accountingModel{price: *price, category: categoryEnum, accountingTime: *accountingTime, detail: combinedDetail}
 	return c, nil
 }
 
@@ -41,30 +94,30 @@ func (c *messageCMD) Command(ctx context.Context, event *linebot.Event) ([]lineb
 	switch message := event.Message.(type) {
 	case *linebot.TextMessage:
 		splitedCommand := strings.Split(message.Text, " ")
-		if splitedCommand[0] == "cost" || splitedCommand[0] == "Cost" {
+		if strings.ToLower(splitedCommand[0]) == "cost" {
 			// parse cost command
 			param, err := parseCostCommand(splitedCommand[1:])
 			if err != nil {
-				m := linebot.NewTextMessage(err.Error())
-				return []linebot.Message{m}, nil
+				replyMessage := linebot.NewTextMessage(err.Error())
+				return []linebot.Message{replyMessage}, nil
 			}
 			userID := event.Source.UserID
 
 			// insert new record to db
-			insert := "INSERT INTO Accounting (userID, category, accountingTime, price, detail) VALUES (?, ?, ?, ?)"
+			insert := "INSERT INTO Accounting (userID, category, accountingTime, price, detail) VALUES (?, ?, ?, ?, ?)"
 			_, err = c.db.Exec(insert, userID, param.category, param.accountingTime, param.price, param.detail)
 			if err != nil {
-				m := linebot.NewTextMessage(err.Error())
-				return []linebot.Message{m}, nil
+				replyMessage := linebot.NewTextMessage(err.Error())
+				return []linebot.Message{replyMessage}, nil
 			}
-			m := linebot.NewTextMessage("Accounting recorded!")
-			return []linebot.Message{m}, nil
+			replyMessage := linebot.NewTextMessage("Accounting recorded!")
+			return []linebot.Message{replyMessage}, nil
 		}
-		m := linebot.NewTextMessage("Unknown command!\n" + costUsage)
-		return []linebot.Message{m}, nil
+		replyMessage := linebot.NewTextMessage("Unknown command!\n" + costUsage)
+		return []linebot.Message{replyMessage}, nil
 	default:
-		m := linebot.NewTextMessage("Not supported event yet, sorry!")
-		return []linebot.Message{m}, nil
+		replyMessage := linebot.NewTextMessage("Not supported event yet, sorry!")
+		return []linebot.Message{replyMessage}, nil
 	}
 }
 
