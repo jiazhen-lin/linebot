@@ -70,7 +70,7 @@ func parseCostCommand(cmd []string) (*accountingModel, error) {
 	// example: cost 999 breakfast -t 2018-09-09 -d kappa breakfast
 	accounting := kingpin.New("cost", "Accounting command line.")
 	price := accounting.Arg("price", "Price").Required().Float64()
-	category := accounting.Arg("category", "Category").Default("Unknown").Required().String()
+	category := accounting.Arg("category", "Category").Default("unknown").String()
 	accountingTime := accounting.Flag("time", "Accounting time.").Default(time.Now().UTC().Format("2006-01-02")).Short('t').String()
 	detail := accounting.Flag("detail", "Detail.").Default("").Short('d').String()
 	remain := RemainCmdList(accounting.Arg("remain", "Remain part of command."))
